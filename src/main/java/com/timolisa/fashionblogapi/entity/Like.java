@@ -12,6 +12,7 @@ import lombok.*;
 @Builder
 
 @Entity
+@Table(name = "likes")
 public class Like extends BaseEntity {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.DETACH})

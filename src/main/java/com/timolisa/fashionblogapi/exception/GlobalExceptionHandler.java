@@ -1,4 +1,47 @@
 package com.timolisa.fashionblogapi.exception;
 
+import com.timolisa.fashionblogapi.dto.ErrorMessageDTO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ControllerAdvice
+@ResponseStatus
 public class GlobalExceptionHandler {
+    @ExceptionHandler(InvalidInputsException.class)
+    public ResponseEntity<ErrorMessageDTO> invalidInputsException(InvalidInputsException exception) {
+        ErrorMessageDTO errorMessage =
+                new ErrorMessageDTO(HttpStatus.BAD_REQUEST, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMessage);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ErrorMessageDTO> postNotFoundException(PostNotFoundException exception) {
+        ErrorMessageDTO errorMessage =
+                new ErrorMessageDTO(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<ErrorMessageDTO> unauthorizedAccessException(UnauthorizedAccessException exception) {
+        ErrorMessageDTO errorMessage =
+                new ErrorMessageDTO(HttpStatus.UNAUTHORIZED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorMessage);
+    }
+
+    @ExceptionHandler(UserDoesNotExistException.class)
+    public ResponseEntity<ErrorMessageDTO> userDoesNotExistException(UserDoesNotExistException exception) {
+        ErrorMessageDTO errorMessage =
+                new ErrorMessageDTO(HttpStatus.NOT_FOUND, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorMessage);
+    }
+
+    @ExceptionHandler(UsernameExistsException.class)
+    public ResponseEntity<ErrorMessageDTO> usernameExistsException(UsernameExistsException exception) {
+        ErrorMessageDTO errorMessage =
+                new ErrorMessageDTO(HttpStatus.ALREADY_REPORTED, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(errorMessage);
+    }
 }

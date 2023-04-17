@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @ToString
 @NoArgsConstructor
@@ -27,5 +28,7 @@ public class User {
     private String username;
     private String email;
     private String password;
-//    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    private Role role;
 }

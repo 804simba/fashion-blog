@@ -54,7 +54,7 @@ class UserControllerTest {
                 .thenReturn(new ApiResponse<>("Username already exists", false, null));
 
 
-        mockMvc.perform(post("/api/users/sign-up")
+        mockMvc.perform(post("/api/fashion-blog/users/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userSignupDTO))) // set the request body
                 .andExpect(status().isOk())
@@ -62,7 +62,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.success").value(true))
                 .andExpect(jsonPath("$.data").isNotEmpty());
 
-        MvcResult mvcResult = mockMvc.perform(post("/api/users/sign-up")
+        MvcResult mvcResult = mockMvc.perform(post("/api/fashion-blog/users/sign-up")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userSignupDTO)))
                 .andExpect(status().isOk())

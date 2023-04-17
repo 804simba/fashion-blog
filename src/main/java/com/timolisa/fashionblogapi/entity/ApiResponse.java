@@ -16,4 +16,8 @@ public class ApiResponse<T> {
         this.message = usernameAlreadyExists;
         this.success = status;
     }
+
+    public ApiResponse(String message) {
+        this.message = message;
+    }
 }

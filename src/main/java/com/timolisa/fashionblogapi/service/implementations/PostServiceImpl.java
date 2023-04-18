@@ -78,7 +78,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public ApiResponse<Post> updatePostById(Long postId, PostDTO postDTO)
+    public ApiResponse<Post> updatePost(Long postId, PostDTO postDTO)
             throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Login to the application");
@@ -97,7 +97,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public void deletePostById(Long postId)
+    public ApiResponse<String> deletePost(Long postId)
             throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Login to the application");
@@ -110,5 +110,6 @@ public class PostServiceImpl implements PostService {
         }
         postRepository
                 .delete(postRepository.findById(postId).get());
+        return responseManager.success("Post deleted");
     }
 }

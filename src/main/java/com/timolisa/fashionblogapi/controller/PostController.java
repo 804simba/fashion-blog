@@ -54,14 +54,15 @@ public class PostController {
     public ResponseEntity<ApiResponse<Post>> editPost(@RequestBody PostDTO postDTO,
                                                       @PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {
-        ApiResponse<Post> existingPost = postService.updatePostById(postId, postDTO);
+        ApiResponse<Post> existingPost = postService.updatePost(postId, postDTO);
         return new ResponseEntity<>(existingPost, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/delete/{post-id}")
-    public ResponseEntity<String> deletePost(@PathVariable("post-id") Long postId)
+    public ResponseEntity<ApiResponse<String>> deletePost(@PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {
-        postService.deletePostById(postId);
-        return new ResponseEntity<>("Deleted successfully", HttpStatus.OK);
+        ApiResponse<String> response =
+                postService.deletePost(postId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

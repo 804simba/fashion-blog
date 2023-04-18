@@ -14,6 +14,6 @@ public interface PostService {
     ApiResponse<Post> createPost(PostDTO postDto) throws UnauthorizedAccessException, InvalidInputsException;
     ApiResponse<Post> findPostById(Long postId) throws PostNotFoundException, UnauthorizedAccessException;
     ApiResponse<Page<Post>> findAllPosts(Pageable pageable) throws PostNotFoundException, UnauthorizedAccessException;
-    ApiResponse<Post> updatePostById(Long postId, PostDTO postDTO) throws UnauthorizedAccessException, PostNotFoundException;
-    void deletePostById(Long postId) throws UnauthorizedAccessException, PostNotFoundException;
+    ApiResponse<Post> updatePost(Long postId, PostDTO postDTO) throws UnauthorizedAccessException, PostNotFoundException;
+    ApiResponse<String> deletePost(Long postId) throws UnauthorizedAccessException, PostNotFoundException;
 }

@@ -22,7 +22,8 @@ public class CommentController {
 
     @PostMapping("/new/{comment-id}")
     public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable("comment-id") Long commentId,
-                                                              @RequestBody CommentDTO commentDTO) throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
+                                                              @RequestBody CommentDTO commentDTO)
+            throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
         ApiResponse<Comment> response =
                 commentService.createComment(commentDTO, commentId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -31,29 +32,32 @@ public class CommentController {
 
     @PutMapping("/update-comment/{comment-id}")
     public ResponseEntity<ApiResponse<Comment>> updateComment(@PathVariable("comment-id") Long commentId,
-                                                              @RequestBody CommentDTO commentDTO) throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
+                                                              @RequestBody CommentDTO commentDTO)
+            throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
         ApiResponse<Comment> response =
                 commentService.updateComment(commentDTO, commentId);
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
     @GetMapping("/{comment-id}")
-    public ResponseEntity<ApiResponse<Comment>> getComment(@PathVariable("comment-id") Long commentId,
-                                                           @RequestBody CommentDTO commentDTO) throws PostNotFoundException, UnauthorizedAccessException {
+    public ResponseEntity<ApiResponse<Comment>> getComment(@PathVariable("comment-id") Long commentId)
+            throws PostNotFoundException, UnauthorizedAccessException {
         ApiResponse<Comment> response =
                 commentService.findCommentById(commentId);
         return new ResponseEntity<>(response, HttpStatus.FOUND);
     }
 
     @GetMapping("/{post-id}")
-    public ResponseEntity<ApiResponse<List<Comment>>> getAllCommentsForAPost(@PathVariable("post-id") Long postId) throws PostNotFoundException, UnauthorizedAccessException {
+    public ResponseEntity<ApiResponse<List<Comment>>> getAllCommentsForAPost(@PathVariable("post-id") Long postId)
+            throws PostNotFoundException, UnauthorizedAccessException {
         ApiResponse<List<Comment>> comments =
                 commentService.findAllCommentsForAPost(postId);
         return new ResponseEntity<>(comments, HttpStatus.FOUND);
     }
 
     @DeleteMapping("/{comment-id}")
-    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("comment-id") Long commentId) throws PostNotFoundException, UnauthorizedAccessException {
+    public ResponseEntity<ApiResponse<String>> deleteComment(@PathVariable("comment-id") Long commentId)
+            throws PostNotFoundException, UnauthorizedAccessException {
         ApiResponse<String> response =
                 commentService.deleteComment(commentId);
         return new ResponseEntity<>(response, HttpStatus.OK);

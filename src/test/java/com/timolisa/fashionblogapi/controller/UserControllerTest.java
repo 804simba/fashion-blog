@@ -2,6 +2,7 @@ package com.timolisa.fashionblogapi.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
 import com.timolisa.fashionblogapi.entity.ApiResponse;
@@ -15,8 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
-import static com.timolisa.fashionblogapi.UserData.buildUserResponseDTO;
-import static com.timolisa.fashionblogapi.UserData.buildUserSignUpDTO;
+import static com.timolisa.fashionblogapi.UserData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -78,7 +78,23 @@ class UserControllerTest {
     }
 
     @Test
-    public void testLoginSuccess() {
+    public void testLoginSuccess() throws Exception {
+        UserLoginDTO loginDTO = buildUserLoginDTO();
+        UserResponseDTO userResponseDTO = buildUserResponseDTO();
 
+        ApiResponse<UserResponseDTO> apiResponse =
+                new ApiResponse<>("Login successful", true, userResponseDTO);
+
+        when(userService.loginUser(loginDTO)).thenReturn(apiResponse);
+
+        when(responseManager.success(userResponseDTO))
+                .thenReturn(new ApiResponse<>("Login successful", true, userResponseDTO));
+        mockMvc.perform(post("/api/fashion-blog/users/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDTO))) // set the request body
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Login successful"))
+                .andExpect(jsonPath("$.success").value(true))
+                .andExpect(jsonPath("$.data").isNotEmpty());
     }
 }

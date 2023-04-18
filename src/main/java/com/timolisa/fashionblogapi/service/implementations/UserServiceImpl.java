@@ -70,7 +70,11 @@ public class UserServiceImpl implements UserService {
         if (!isUserExists) {
             throw new UserDoesNotExistException("User does not exist.");
         }
-        User user = userRepository.findByUsernameAndPassword(username, password).orElse(null);
+        User user = userRepository.findByUsernameAndPassword(username, password)
+                .orElseThrow(() -> {
+                    String message = "User does not exist";
+                    return new UserDoesNotExistException(message);
+                });
         assert user != null;
         UserResponseDTO userResponseDTO = userToUserDTO(user);
         session.setAttribute("userId", user.getUserId());

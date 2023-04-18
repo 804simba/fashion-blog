@@ -25,6 +25,7 @@ public class Post extends BaseEntity{
 
     private String content;
 
+    @Enumerated(EnumType.STRING)
     private Category category;
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)

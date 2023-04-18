@@ -10,10 +10,10 @@ import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import java.util.List;
 
 public interface CommentService {
-    ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException;
+    ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException;
 
     ApiResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException;
-    ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException;
-    ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException;
+    ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException;
+    ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException;
     ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException;
 }

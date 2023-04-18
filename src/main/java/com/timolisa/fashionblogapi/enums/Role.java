@@ -1,5 +1,5 @@
 package com.timolisa.fashionblogapi.enums;
 
 public enum Role {
-    ADMIN, USER
+    ADMIN, USER, ANONYMOUS_USER
 }

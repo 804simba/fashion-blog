@@ -3,11 +3,14 @@ package com.timolisa.fashionblogapi.service.implementations;
 import com.timolisa.fashionblogapi.dto.CommentDTO;
 import com.timolisa.fashionblogapi.entity.ApiResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
+import com.timolisa.fashionblogapi.entity.Post;
+import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Role;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
 import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.repository.CommentRepository;
+import com.timolisa.fashionblogapi.repository.PostRepository;
 import com.timolisa.fashionblogapi.service.CommentService;
 import com.timolisa.fashionblogapi.util.LoggedInUser;
 import com.timolisa.fashionblogapi.util.ResponseManager;
@@ -21,26 +24,32 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
-
+    private final PostRepository postRepository;
     private final CommentRepository commentRepository;
     private final ResponseManager<Comment> responseManager;
     private final HttpSession session;
     private final LoggedInUser loggedInUser;
     @Override
-    public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException {
+    public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException {
+        Comment comment = new Comment();
         if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application");
+            User user = new User();
+            user.setRole(Role.ANONYMOUS_USER);
+            comment.setUser(user);
+        } else {
+            comment.setUser(loggedInUser.findLoggedInUser());
         }
-        if (loggedInUser
-                .findLoggedInUser().getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("You are not authorized to carry out this operation");
-        }
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    String message = "Post not found";
+                    return new PostNotFoundException(message);
+                });
+
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Comments cannot be empty");
         }
-        Comment comment = new Comment();
+        comment.setPost(foundPost);
         BeanUtils.copyProperties(commentDTO, comment);
-        comment.setUser(loggedInUser.findLoggedInUser());
         commentRepository.save(comment);
         return responseManager.success(comment);
     }
@@ -59,26 +68,32 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException {
+    public ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
         List<Comment> comments =
                 commentRepository.findByPost_IdOrderByCreatedAt(postId);
+        if (comments.size() == 0) {
+            throw new PostNotFoundException("No comments for this post");
+        }
         return responseManager.success(comments);
     }
 
     @Override
-    public ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
+    public ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
+        }
+        if (commentDTO.getComment().equals("")) {
+            throw new InvalidInputsException("Please type in a comment");
         }
         Comment foundComment =
                 commentRepository.findById(commentId).orElseThrow(() -> {
                             String message = "Comment not found";
                             return new PostNotFoundException(message);
                         });
-        BeanUtils.copyProperties(commentDTO, foundComment);
+        foundComment.setComment(commentDTO.getComment());
         commentRepository.save(foundComment);
         return responseManager.success(foundComment);
     }

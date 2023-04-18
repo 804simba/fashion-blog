@@ -15,7 +15,7 @@ public class UserData {
                 .username("jeffHardy")
                 .email("jeff@gmail.com")
                 .password("1234")
-                .role(Role.REGISTERED_USER)
+                .role(Role.USER)
                 .build();
     }
     public static UserSignupDTO buildUserSignUpDTO() {

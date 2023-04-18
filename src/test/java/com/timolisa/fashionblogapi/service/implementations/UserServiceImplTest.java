@@ -7,7 +7,6 @@ import com.timolisa.fashionblogapi.entity.ApiResponse;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.util.ResponseManager;
-import jakarta.servlet.http.HttpSession;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +25,6 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @Slf4j
 class UserServiceImplTest {
-    @Mock
-    private HttpSession session;
     @Mock
     private UserRepository userRepository;
 

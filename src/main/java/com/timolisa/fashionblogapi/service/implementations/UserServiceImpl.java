@@ -15,8 +15,6 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -50,7 +48,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User user = userDtoToUser(userSignupDTO);
-        user.setRole(Role.REGISTERED_USER);
+        user.setRole(Role.USER);
         userRepository.save(user);
 
         UserResponseDTO userResponseDTO = userToUserDTO(user);

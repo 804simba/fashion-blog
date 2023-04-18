@@ -29,12 +29,12 @@ public class PostServiceImpl implements PostService {
     @Override
     public ApiResponse<Post> createPost(PostDTO postDto)
             throws UnauthorizedAccessException, InvalidInputsException {
-//        if (session.getAttribute("userId") == null) {
-//            throw new UnauthorizedAccessException("Please login to the application.");
-//        }
-//        if (loggedInUser.findLoggedInUser().getRole() != Role.ADMIN) {
-//            throw new UnauthorizedAccessException("You are not authorized to carry out this operation");
-//        }
+        if (session.getAttribute("userId") == null) {
+            throw new UnauthorizedAccessException("Please login to the application.");
+        }
+        if (loggedInUser.findLoggedInUser().getRole() != Role.ADMIN) {
+            throw new UnauthorizedAccessException("You are not authorized to carry out this operation");
+        }
         if (postDto.getTitle().equals("") || postDto.getContent().equals("")
                 || postDto.getCategory() == null) {
             throw new InvalidInputsException("You are missing one of the required fields");
@@ -56,7 +56,11 @@ public class PostServiceImpl implements PostService {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException("Post not found.");
         }
-        Post post = postRepository.findById(postId).orElse(null);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> {
+                    String message = "Post not found";
+                    return new PostNotFoundException(message);
+                });
         return responseManager.success(post);
     }
 

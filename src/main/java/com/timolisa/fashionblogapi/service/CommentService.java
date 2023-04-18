@@ -14,6 +14,6 @@ public interface CommentService {
 
     ApiResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException;
     ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException;
-    ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException;
-    ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException;
+    ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException;
+    ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException;
 }

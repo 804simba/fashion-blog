@@ -69,18 +69,31 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException {
+    public ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
-        return null;
+        Comment foundComment =
+                commentRepository.findById(commentId).orElseThrow(() -> {
+                            String message = "Comment not found";
+                            return new PostNotFoundException(message);
+                        });
+        BeanUtils.copyProperties(commentDTO, foundComment);
+        commentRepository.save(foundComment);
+        return responseManager.success(foundComment);
     }
 
     @Override
-    public ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException {
+    public ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
-        return null;
+        Comment foundComment =
+                commentRepository.findById(commentId).orElseThrow(() -> {
+                    String message = "Comment not found";
+                    return new PostNotFoundException(message);
+                });
+        commentRepository.delete(foundComment);
+        return responseManager.success("Comment deleted");
     }
 }

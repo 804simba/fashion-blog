@@ -30,7 +30,8 @@ public class CommentServiceImpl implements CommentService {
     private final HttpSession session;
     private final LoggedInUser loggedInUser;
     @Override
-    public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException {
+    public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId)
+            throws InvalidInputsException, PostNotFoundException {
         Comment comment = new Comment();
         if (session.getAttribute("userId") == null) {
             User user = new User();

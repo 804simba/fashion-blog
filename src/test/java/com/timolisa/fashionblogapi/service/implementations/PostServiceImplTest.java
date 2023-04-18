@@ -101,7 +101,7 @@ class PostServiceImplTest {
         assertEquals(postsPage, response.getData());
     }
 
-    private static class PostData {
+    public static class PostData {
         public static Post buildPost() {
             User user = UserData.buildUser();
             user.setUserId(1L);

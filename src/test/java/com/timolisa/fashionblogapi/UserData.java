@@ -11,7 +11,6 @@ public class UserData {
 
     public static User buildUser() {
         return User.builder()
-//                .userId(1L)
                 .username("jeffHardy")
                 .email("jeff@gmail.com")
                 .password("1234")

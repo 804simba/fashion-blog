@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface CommentService {
     ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException;
-
+    void saveComment(Long postId, Comment comment);
     ApiResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException;
     ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException;
     ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException;

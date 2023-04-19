@@ -4,6 +4,8 @@ import com.timolisa.fashionblogapi.enums.Role;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
 @Builder
@@ -19,7 +21,7 @@ import lombok.*;
                 @UniqueConstraint(columnNames = "email")
         }
 )
-public class User {
+public class User implements Serializable {
     @Id
     @GeneratedValue(
             strategy = GenerationType.IDENTITY

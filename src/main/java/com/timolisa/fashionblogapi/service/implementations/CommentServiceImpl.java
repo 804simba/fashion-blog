@@ -14,10 +14,11 @@ import com.timolisa.fashionblogapi.repository.PostRepository;
 import com.timolisa.fashionblogapi.service.CommentService;
 import com.timolisa.fashionblogapi.util.LoggedInUser;
 import com.timolisa.fashionblogapi.util.ResponseManager;
+import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpSession;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Session;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
     private final ResponseManager<Comment> responseManager;
     private final HttpSession session;
     private final LoggedInUser loggedInUser;
+    private final EntityManager entityManager;
     @Override
     public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId)
             throws InvalidInputsException, PostNotFoundException {
@@ -52,12 +54,21 @@ public class CommentServiceImpl implements CommentService {
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Comments cannot be empty");
         }
-        comment.setPost(foundPost);
+//        comment.setPost(foundPost);
         BeanUtils.copyProperties(commentDTO, comment);
-        log.info("User comment:: {}", comment);
+//        log.info("User comment:: {}", comment);
 
-        commentRepository.save(comment);
+//        commentRepository.save(comment);
+        saveComment(postId, comment);
         return responseManager.success(comment);
+    }
+
+    @Override
+    @Transactional
+    public void saveComment(Long postId, Comment comment) {
+        Post post = entityManager.find(Post.class, postId);
+        comment.setPost(post);
+        commentRepository.save(comment);
     }
 
     @Override

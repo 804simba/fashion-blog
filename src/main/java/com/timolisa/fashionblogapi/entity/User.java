@@ -33,7 +33,6 @@ public class User implements Serializable {
     private String email;
     @Column(nullable = false, length = 20)
     private String password;
-
     @Enumerated(EnumType.STRING)
     private Role role;
 }

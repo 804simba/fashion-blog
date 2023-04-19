@@ -54,11 +54,8 @@ public class CommentServiceImpl implements CommentService {
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Comments cannot be empty");
         }
-//        comment.setPost(foundPost);
+        comment.setPost(foundPost);
         BeanUtils.copyProperties(commentDTO, comment);
-//        log.info("User comment:: {}", comment);
-
-//        commentRepository.save(comment);
         saveComment(postId, comment);
         return responseManager.success(comment);
     }

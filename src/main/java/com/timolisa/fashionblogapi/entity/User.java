@@ -25,8 +25,11 @@ public class User {
             strategy = GenerationType.IDENTITY
     )
     private Long userId;
+    @Column(nullable = false, length = 8)
     private String username;
+    @Column(nullable = false, length = 20)
     private String email;
+    @Column(nullable = false, length = 20)
     private String password;
 
     @Enumerated(EnumType.STRING)

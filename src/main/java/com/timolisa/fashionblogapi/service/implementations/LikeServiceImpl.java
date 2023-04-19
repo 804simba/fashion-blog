@@ -3,6 +3,7 @@ package com.timolisa.fashionblogapi.service.implementations;
 import com.timolisa.fashionblogapi.entity.ApiResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.entity.Like;
+import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.repository.LikeRepository;
 import com.timolisa.fashionblogapi.service.LikeService;
 import com.timolisa.fashionblogapi.util.ResponseManager;
@@ -25,6 +26,22 @@ public class LikeServiceImpl implements LikeService {
     @Override
     public ApiResponse<String> deleteLikeForComment(Long commentId) {
         likeRepository.deleteByComment_Id(commentId);
-        return responseManager.success("like deleted successfully");
+        String message = String.format("like for post with id: %d has been unliked", commentId);
+        return responseManager.success(message);
+    }
+
+    @Override
+    public ApiResponse<Like> createLikeForPost(Post post) {
+        Like like = new Like();
+        like.setPost(post);
+        likeRepository.save(like);
+        return responseManager.success(like);
+    }
+
+    @Override
+    public ApiResponse<String> deleteLikeForPost(Long postId) {
+        likeRepository.deleteByPost_Id(postId);
+        String message = String.format("like for post with id: %d has been unliked", postId);
+        return responseManager.success(message);
     }
 }

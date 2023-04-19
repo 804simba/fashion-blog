@@ -20,12 +20,12 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
 
-    @PostMapping("/new/{comment-id}")
-    public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable("comment-id") Long commentId,
+    @PostMapping("/new/{post-id}")
+    public ResponseEntity<ApiResponse<Comment>> createComment(@PathVariable("post-id") Long postId,
                                                               @RequestBody CommentDTO commentDTO)
             throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
         ApiResponse<Comment> response =
-                commentService.createComment(commentDTO, commentId);
+                commentService.createComment(commentDTO, postId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
 
     }

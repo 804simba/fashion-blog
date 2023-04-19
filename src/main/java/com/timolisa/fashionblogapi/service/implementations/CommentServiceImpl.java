@@ -16,6 +16,8 @@ import com.timolisa.fashionblogapi.util.LoggedInUser;
 import com.timolisa.fashionblogapi.util.ResponseManager;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +25,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
@@ -51,6 +54,8 @@ public class CommentServiceImpl implements CommentService {
         }
         comment.setPost(foundPost);
         BeanUtils.copyProperties(commentDTO, comment);
+        log.info("User comment:: {}", comment);
+
         commentRepository.save(comment);
         return responseManager.success(comment);
     }

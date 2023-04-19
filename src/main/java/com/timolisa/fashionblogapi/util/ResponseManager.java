@@ -28,6 +28,10 @@ public class ResponseManager<T> {
         return new ApiResponse<>(usernameAlreadyExists, status);
     }
 
+    public ApiResponse<String> error(String message) {
+        return new ApiResponse<>(message);
+    }
+
     public ApiResponse<Page<T>> notFound(String message) {
         return new ApiResponse<>(message);
     }

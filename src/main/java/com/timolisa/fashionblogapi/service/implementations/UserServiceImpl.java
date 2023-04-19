@@ -1,11 +1,15 @@
 package com.timolisa.fashionblogapi.service.implementations;
 
+import com.timolisa.fashionblogapi.dto.AdminSignupDTO;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
+import com.timolisa.fashionblogapi.entity.Admin;
 import com.timolisa.fashionblogapi.entity.ApiResponse;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Role;
+import com.timolisa.fashionblogapi.exception.InvalidInputsException;
+import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.repository.UserRepository;
@@ -58,6 +62,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ApiResponse<UserResponseDTO> registerAdmin(AdminSignupDTO adminSignUpDTO) throws UsernameExistsException {
+        String username = adminSignUpDTO.getUsername();
+
+        ApiResponse<UserResponseDTO> apiResponse;
+
+        boolean usernameExists =
+                userRepository.existsByUsername(username);
+
+        if (usernameExists) {
+            throw new UsernameExistsException("Username exists already");
+        }
+        User user = adminDtoToUser(adminSignUpDTO);
+        user.setRole(Role.ADMIN);
+        userRepository.save(user);
+
+        UserResponseDTO userResponseDTO = userToUserDTO(user);
+        apiResponse = responseManager.success(userResponseDTO);
+        return apiResponse;
+    }
+
+    @Override
     public ApiResponse<UserResponseDTO> loginUser(UserLoginDTO userLoginDTO) throws UserDoesNotExistException {
         String username = userLoginDTO.getUsername();
         String password = userLoginDTO.getPassword();
@@ -92,6 +117,14 @@ public class UserServiceImpl implements UserService {
         return UserResponseDTO.builder()
                 .username(user.getUsername())
                 .email(user.getEmail())
+                .role(user.getRole())
+                .build();
+    }
+    private User adminDtoToUser(AdminSignupDTO adminSignupDTO) {
+        return User.builder()
+                .username(adminSignupDTO.getUsername())
+                .email(adminSignupDTO.getEmail())
+                .password(adminSignupDTO.getPassword())
                 .build();
     }
 }

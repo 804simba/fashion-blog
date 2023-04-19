@@ -1,9 +1,12 @@
 package com.timolisa.fashionblogapi.controller;
 
+import com.timolisa.fashionblogapi.dto.AdminSignupDTO;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
 import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.exception.InvalidInputsException;
+import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.service.UserService;
@@ -26,6 +29,18 @@ public class UserController {
                           ResponseManager<UserResponseDTO> responseManager) {
         this.userService = userService;
         this.responseManager = responseManager;
+    }
+
+    @PostMapping("/admin/register")
+    public ResponseEntity<ApiResponse<UserResponseDTO>> adminRegistration(@RequestBody AdminSignupDTO signupDTO) {
+        ApiResponse<UserResponseDTO> apiResponse;
+        try {
+            apiResponse = userService.registerAdmin(signupDTO);
+        } catch (UsernameExistsException | UnauthorizedAccessException | InvalidInputsException e) {
+            apiResponse = responseManager.error("Bad credentials", false);
+            return ResponseEntity.badRequest().body(apiResponse);
+        }
+        return ResponseEntity.ok(apiResponse);
     }
 
     @PostMapping("/sign-up")

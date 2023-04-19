@@ -11,7 +11,6 @@ public class ApiResponse<T> {
     private Object message;
     private boolean success;
     private T data;
-
     public ApiResponse(String usernameAlreadyExists, boolean status) {
         this.message = usernameAlreadyExists;
         this.success = status;

@@ -2,7 +2,7 @@ package com.timolisa.fashionblogapi.service.implementations;
 
 import com.timolisa.fashionblogapi.UserData;
 import com.timolisa.fashionblogapi.dto.PostDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Category;
@@ -59,10 +59,10 @@ class PostServiceImplTest {
         when(postRepository.save(any(Post.class)))
                 .thenReturn(post);
         when(responseManager.success(any(Post.class)))
-                .thenReturn(new ApiResponse<>("Post created successfully", true, post));
+                .thenReturn(new APIResponse<>("Post created successfully", true, post));
 
-        ApiResponse<Post> result = postService.createPost(postDTO);
-        assertEquals("example", result.getData().getTitle());
+        APIResponse<Post> result = postService.createPost(postDTO);
+        assertEquals("example", result.getPayload().getTitle());
     }
 
     @Test
@@ -76,10 +76,10 @@ class PostServiceImplTest {
         when(postRepository.findById(any(Long.class)))
                 .thenReturn(Optional.of(post));
         when(responseManager.success(any(Post.class)))
-                .thenReturn(new ApiResponse<>("Post", true, post));
-        ApiResponse<Post> response =
+                .thenReturn(new APIResponse<>("Post", true, post));
+        APIResponse<Post> response =
                 postService.findPostById(1L);
-        assertEquals(ApiResponse.class, response.getClass());
+        assertEquals(APIResponse.class, response.getClass());
     }
 
     @Test
@@ -92,13 +92,13 @@ class PostServiceImplTest {
                 .thenReturn(1L);
         when(postRepository.findAll(pageable)).thenReturn(postsPage);
         when(responseManager.success(postsPage))
-                .thenReturn(new ApiResponse<>("Success", true, postsPage));
+                .thenReturn(new APIResponse<>("Success", true, postsPage));
 
-        ApiResponse<Page<Post>> response = postService.findAllPosts(pageable);
+        APIResponse<Page<Post>> response = postService.findAllPosts(pageable);
 
-        assertEquals(ApiResponse.class, response.getClass());
+        assertEquals(APIResponse.class, response.getClass());
         assertEquals("Success", response.getMessage());
-        assertEquals(postsPage, response.getData());
+        assertEquals(postsPage, response.getPayload());
     }
 
     public static class PostData {

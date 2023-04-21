@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.service.UserService;
 import com.timolisa.fashionblogapi.util.ResponseManager;
 import org.junit.jupiter.api.Test;
@@ -42,16 +42,16 @@ class UserControllerTest {
         UserSignupDTO userSignupDTO = buildUserSignUpDTO();
         UserResponseDTO userResponseDTO = buildUserResponseDTO();
 
-        ApiResponse<UserResponseDTO> apiResponse =
-                new ApiResponse<>("Registration successful", true, userResponseDTO);
+        APIResponse<UserResponseDTO> apiResponse =
+                new APIResponse<>("Registration successful", true, userResponseDTO);
 
         when(userService.registerUser(userSignupDTO)).thenReturn(apiResponse);
 
         when(responseManager.success(userResponseDTO))
-                .thenReturn(new ApiResponse<>("Registration successful", true, userResponseDTO));
+                .thenReturn(new APIResponse<>("Registration successful", true, userResponseDTO));
 
         when(responseManager.error("Username already exists", false))
-                .thenReturn(new ApiResponse<>("Username already exists", false, null));
+                .thenReturn(new APIResponse<>("Username already exists", false, null));
 
 
         mockMvc.perform(post("/api/fashion-blog/users/sign-up")
@@ -69,12 +69,12 @@ class UserControllerTest {
                 .andReturn();
 
         String responseContent = mvcResult.getResponse().getContentAsString();
-        ApiResponse<UserResponseDTO> actualResponse =
+        APIResponse<UserResponseDTO> actualResponse =
                 objectMapper.readValue(responseContent, new TypeReference<>() {
                 });
 
-        assertEquals(apiResponse.getData().getUsername()
-                ,actualResponse.getData().getUsername());
+        assertEquals(apiResponse.getPayload().getUsername()
+                ,actualResponse.getPayload().getUsername());
     }
 
     @Test
@@ -82,13 +82,13 @@ class UserControllerTest {
         UserLoginDTO loginDTO = buildUserLoginDTO();
         UserResponseDTO userResponseDTO = buildUserResponseDTO();
 
-        ApiResponse<UserResponseDTO> apiResponse =
-                new ApiResponse<>("Login successful", true, userResponseDTO);
+        APIResponse<UserResponseDTO> apiResponse =
+                new APIResponse<>("Login successful", true, userResponseDTO);
 
         when(userService.loginUser(loginDTO)).thenReturn(apiResponse);
 
         when(responseManager.success(userResponseDTO))
-                .thenReturn(new ApiResponse<>("Login successful", true, userResponseDTO));
+                .thenReturn(new APIResponse<>("Login successful", true, userResponseDTO));
         mockMvc.perform(post("/api/fashion-blog/users/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDTO))) // set the request body

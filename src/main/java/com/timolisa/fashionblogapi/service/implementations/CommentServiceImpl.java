@@ -1,7 +1,7 @@
 package com.timolisa.fashionblogapi.service.implementations;
 
 import com.timolisa.fashionblogapi.dto.CommentDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.entity.User;
@@ -35,7 +35,7 @@ public class CommentServiceImpl implements CommentService {
     private final LoggedInUser loggedInUser;
     private final EntityManager entityManager;
     @Override
-    public ApiResponse<Comment> createComment(CommentDTO commentDTO, Long postId)
+    public APIResponse<Comment> createComment(CommentDTO commentDTO, Long postId)
             throws InvalidInputsException, PostNotFoundException {
         Comment comment = new Comment();
         if (session.getAttribute("userId") == null) {
@@ -69,7 +69,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException {
+    public APIResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
@@ -82,7 +82,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException {
+    public APIResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
@@ -95,7 +95,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException {
+    public APIResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }
@@ -113,7 +113,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ApiResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
+    public APIResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
         if (session.getAttribute("userId") == null) {
             throw new UnauthorizedAccessException("Please login to the application");
         }

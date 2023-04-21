@@ -1,6 +1,6 @@
 package com.timolisa.fashionblogapi.controller;
 
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.entity.Like;
 import com.timolisa.fashionblogapi.entity.Post;
@@ -23,35 +23,35 @@ public class LikeController {
     private final PostService postService;
 
     @PostMapping("/{post-id}")
-    public ResponseEntity<ApiResponse<Like>> createLikeForPost(@PathVariable("post-id") Long postId)
+    public ResponseEntity<APIResponse<Like>> createLikeForPost(@PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {
         Post post = postService
-                .findPostById(postId).getData();
+                .findPostById(postId).getPayload();
 
-        ApiResponse<Like> response = likeService.createLikeForPost(post);
+        APIResponse<Like> response = likeService.createLikeForPost(post);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{post-id}")
-    public ResponseEntity<ApiResponse<String>> unlikeAPost(@PathVariable("post-id") Long postId) {
-        ApiResponse<String> response =
+    public ResponseEntity<APIResponse<String>> unlikeAPost(@PathVariable("post-id") Long postId) {
+        APIResponse<String> response =
                 likeService.deleteLikeForPost(postId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/{comment-id}")
-    public ResponseEntity<ApiResponse<Like>> createLikeForComment(@PathVariable("comment-id") Long commentId)
+    public ResponseEntity<APIResponse<Like>> createLikeForComment(@PathVariable("comment-id") Long commentId)
             throws PostNotFoundException, UnauthorizedAccessException {
         Comment comment = commentService
-                .findCommentById(commentId).getData();
+                .findCommentById(commentId).getPayload();
 
-        ApiResponse<Like> response = likeService.createLikeForComment(comment);
+        APIResponse<Like> response = likeService.createLikeForComment(comment);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{comment-id}")
-    public ResponseEntity<ApiResponse<String>> unlikeAComment(@PathVariable("comment-id") Long commentId) {
-        ApiResponse<String> response =
+    public ResponseEntity<APIResponse<String>> unlikeAComment(@PathVariable("comment-id") Long commentId) {
+        APIResponse<String> response =
                 likeService.deleteLikeForComment(commentId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

@@ -2,7 +2,7 @@ package com.timolisa.fashionblogapi.service.implementations;
 
 import com.timolisa.fashionblogapi.UserData;
 import com.timolisa.fashionblogapi.dto.CommentDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.entity.User;
@@ -59,13 +59,13 @@ class CommentServiceImplTest {
         when(commentRepository.save(any(Comment.class)))
                 .thenReturn(comment);
         when(responseManager.success(any(Comment.class)))
-                .thenReturn(new ApiResponse<>("Comment successful", true, comment));
+                .thenReturn(new APIResponse<>("Comment successful", true, comment));
         Long postId = commentDTO.getPost().getId();
 
-        ApiResponse<Comment> result = commentService
+        APIResponse<Comment> result = commentService
                 .createComment(commentDTO, postId);
 
-        assertEquals("Love it", result.getData().getComment());
+        assertEquals("Love it", result.getPayload().getComment());
     }
 
     public static class CommentData {

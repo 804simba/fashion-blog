@@ -3,7 +3,7 @@ package com.timolisa.fashionblogapi.service.implementations;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.util.ResponseManager;
@@ -46,18 +46,18 @@ class UserServiceImplTest {
 
         UserResponseDTO userResponseDTO =
                 buildUserResponseDTO();
-        ApiResponse<UserResponseDTO> mockedResponse =
-                new ApiResponse<>("Registration successful", true, userResponseDTO);
+        APIResponse<UserResponseDTO> mockedResponse =
+                new APIResponse<>("Registration successful", true, userResponseDTO);
 
         when(responseManager.success(any(UserResponseDTO.class))).thenReturn(mockedResponse);
 
-        ApiResponse<UserResponseDTO> actualResponse =
+        APIResponse<UserResponseDTO> actualResponse =
                 userService.registerUser(signupDTO);
 
         assertNotNull(actualResponse);
         assertTrue(actualResponse.isSuccess());
         UserResponseDTO responseDTO =
-                actualResponse.getData();
+                actualResponse.getPayload();
 
         assertEquals(signupDTO.getUsername(), responseDTO.getUsername());
         assertEquals(signupDTO.getEmail(), responseDTO.getEmail());
@@ -80,8 +80,8 @@ class UserServiceImplTest {
 
         UserResponseDTO responseDTO = buildUserResponseDTO();
 
-        ApiResponse<UserResponseDTO> mockedResponse =
-                new ApiResponse<>("Login successful", true, responseDTO);
+        APIResponse<UserResponseDTO> mockedResponse =
+                new APIResponse<>("Login successful", true, responseDTO);
 
         when(responseManager.success(any(UserResponseDTO.class))).thenReturn(mockedResponse);
 
@@ -89,12 +89,12 @@ class UserServiceImplTest {
         // Call the method being tested
         UserLoginDTO loginDTO =
                 buildUserLoginDTO();
-        ApiResponse<UserResponseDTO> actualResponse =
+        APIResponse<UserResponseDTO> actualResponse =
                 userService.loginUser(loginDTO);
 
 
         assertTrue(actualResponse.isSuccess());
-        UserResponseDTO data = actualResponse.getData();
+        UserResponseDTO data = actualResponse.getPayload();
         assertEquals(user.getUsername(), data.getUsername());
         assertEquals(user.getEmail(), data.getEmail());
     }

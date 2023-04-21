@@ -1,7 +1,5 @@
 package com.timolisa.fashionblogapi.dto;
 
-import com.timolisa.fashionblogapi.entity.Post;
-import com.timolisa.fashionblogapi.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

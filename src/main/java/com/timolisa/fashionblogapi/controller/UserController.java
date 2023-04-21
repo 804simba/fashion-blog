@@ -4,7 +4,7 @@ import com.timolisa.fashionblogapi.dto.AdminSignupDTO;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
@@ -32,8 +32,8 @@ public class UserController {
     }
 
     @PostMapping("/admin/register")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> adminRegistration(@RequestBody AdminSignupDTO signupDTO) {
-        ApiResponse<UserResponseDTO> apiResponse;
+    public ResponseEntity<APIResponse<UserResponseDTO>> adminRegistration(@RequestBody AdminSignupDTO signupDTO) {
+        APIResponse<UserResponseDTO> apiResponse;
         try {
             apiResponse = userService.registerAdmin(signupDTO);
         } catch (UsernameExistsException | UnauthorizedAccessException | InvalidInputsException e) {
@@ -44,8 +44,8 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> register(@RequestBody UserSignupDTO userSignupDTO) {
-        ApiResponse<UserResponseDTO> apiResponse;
+    public ResponseEntity<APIResponse<UserResponseDTO>> register(@RequestBody UserSignupDTO userSignupDTO) {
+        APIResponse<UserResponseDTO> apiResponse;
         try {
             apiResponse = userService.registerUser(userSignupDTO);
         } catch (UsernameExistsException e) {
@@ -56,15 +56,15 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse<UserResponseDTO>> login(@RequestBody UserLoginDTO userLoginDTO) {
-        ApiResponse<UserResponseDTO> apiResponse;
+    public ResponseEntity<APIResponse<UserResponseDTO>> login(@RequestBody UserLoginDTO userLoginDTO) {
+        APIResponse<UserResponseDTO> apiResponse;
         try {
            apiResponse =
                     userService.loginUser(userLoginDTO);
            return ResponseEntity.ok(apiResponse);
         } catch (UserDoesNotExistException e) {
-            ApiResponse<UserResponseDTO> errorResponse =
-                    new ApiResponse<>(e.getMessage(), false, null);
+            APIResponse<UserResponseDTO> errorResponse =
+                    new APIResponse<>(e.getMessage(), false, null);
             return ResponseEntity.badRequest().body(errorResponse);
         }
     }

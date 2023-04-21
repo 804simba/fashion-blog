@@ -4,12 +4,9 @@ import com.timolisa.fashionblogapi.dto.AdminSignupDTO;
 import com.timolisa.fashionblogapi.dto.UserLoginDTO;
 import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
-import com.timolisa.fashionblogapi.entity.Admin;
-import com.timolisa.fashionblogapi.entity.ApiResponse;
+import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Role;
-import com.timolisa.fashionblogapi.exception.InvalidInputsException;
-import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.repository.UserRepository;
@@ -42,8 +39,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserResponseDTO> registerUser(UserSignupDTO userSignupDTO) throws UsernameExistsException {
-        ApiResponse<UserResponseDTO> apiResponse;
+    public APIResponse<UserResponseDTO> registerUser(UserSignupDTO userSignupDTO) throws UsernameExistsException {
+        APIResponse<UserResponseDTO> apiResponse;
 
         boolean usernameExistsStatus = usernameExists(userSignupDTO.getUsername());
 
@@ -62,10 +59,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserResponseDTO> registerAdmin(AdminSignupDTO adminSignUpDTO) throws UsernameExistsException {
+    public APIResponse<UserResponseDTO> registerAdmin(AdminSignupDTO adminSignUpDTO) throws UsernameExistsException {
         String username = adminSignUpDTO.getUsername();
 
-        ApiResponse<UserResponseDTO> apiResponse;
+        APIResponse<UserResponseDTO> apiResponse;
 
         boolean usernameExists =
                 userRepository.existsByUsername(username);
@@ -83,7 +80,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ApiResponse<UserResponseDTO> loginUser(UserLoginDTO userLoginDTO) throws UserDoesNotExistException {
+    public APIResponse<UserResponseDTO> loginUser(UserLoginDTO userLoginDTO) throws UserDoesNotExistException {
         String username = userLoginDTO.getUsername();
         String password = userLoginDTO.getPassword();
 

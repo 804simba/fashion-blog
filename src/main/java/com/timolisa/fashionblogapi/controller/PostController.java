@@ -10,6 +10,7 @@ import com.timolisa.fashionblogapi.repository.PostSpecification;
 import com.timolisa.fashionblogapi.service.PostService;
 import com.timolisa.fashionblogapi.util.ResponseManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/fashion-blog/posts")
 public class PostController {
     private final PostService postService;
@@ -35,11 +37,19 @@ public class PostController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<APIResponse<List<Post>>> search(@RequestParam("title") String title,
-                                                          @RequestParam("category") String category) {
-        Specification<Post> specification = PostSpecification.hasTitle(title);
+    public ResponseEntity<APIResponse<List<Post>>>
+    search(@RequestParam(value = "title", required = false) String title,
+           @RequestParam(value = "category", required = false) String category) {
+
+        Specification<Post> specification = Specification.where(null);
+        if (title != null && !title.isEmpty()) {
+            specification = specification.and(PostSpecification.hasTitle(title));
+        }
+        if (category != null && !category.isEmpty()) {
+            specification = specification.and(PostSpecification.hasCategory(category));
+        }
         APIResponse<List<Post>> searchResults = postService.searchForPosts(specification);
-        return new ResponseEntity<>(searchResults, HttpStatus.FOUND);
+        return ResponseEntity.ok().body(searchResults);
     }
     @GetMapping
     public ResponseEntity<APIResponse<Page<Post>>> getAllPosts(@RequestParam(defaultValue = "0") int page,

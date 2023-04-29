@@ -1,6 +1,7 @@
-package com.timolisa.fashionblogapi.exception;
+package com.timolisa.fashionblogapi.exception.advice;
 
 import com.timolisa.fashionblogapi.dto.ErrorMessageDTO;
+import com.timolisa.fashionblogapi.exception.*;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

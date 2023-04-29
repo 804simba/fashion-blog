@@ -35,8 +35,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain getSecurityFilterChain(HttpSecurity http) throws Exception {
-        log.info("Before filter chain");
-        http.csrf().disable()
+        http
+                .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and().authorizeHttpRequests().requestMatchers(WHITE_LIST_URLS).permitAll()
                 .and().authorizeHttpRequests().requestMatchers(POST, "/api/fashion-blog/posts/**").hasAuthority("ADMIN")
@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .and()
                 .authenticationProvider(authenticationProvider) // injects the authProvider
                 .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class); // adds the filter before each request
-                log.info("After filter chain");
+
         return http.build();
     }
 }

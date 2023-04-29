@@ -88,6 +88,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (usernameExists) {
             throw new UsernameExistsException("Username exists already");
         }
+
         User user = adminDtoToUser(adminSignUpDTO);
         user.setRole(Role.ADMIN);
         userRepository.save(user);
@@ -127,6 +128,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (!passwordEncoder.matches(password, userDetails.getPassword())) {
             throw new BadCredentialsException("Wrong username or password");
         }
+
         User user = (User) userDetails;
         String token = jwtTokenProvider.generateToken(new UsernamePasswordAuthenticationToken(user, null));
         UserResponseDTO userResponseDTO = userToUserDTO(user);

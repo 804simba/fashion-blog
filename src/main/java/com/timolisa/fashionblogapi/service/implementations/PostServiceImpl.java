@@ -36,10 +36,12 @@ public class PostServiceImpl implements PostService {
             throws InvalidInputsException, UserDoesNotExistException {
         String token = jwtTokenProvider.getTokenFromContext();
         Long userId = jwtTokenProvider.getUserIdFromToken(token);
+
         if (postDto.getTitle().equals("") || postDto.getContent().equals("")
                 || postDto.getCategory() == null) {
             throw new InvalidInputsException("You are missing one of the required fields");
         }
+
         Post post = new Post();
         BeanUtils.copyProperties(postDto, post);
         User user = userRepository.findById(userId)
@@ -79,6 +81,7 @@ public class PostServiceImpl implements PostService {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException("Post not found.");
         }
+
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + postId));
 
@@ -99,6 +102,7 @@ public class PostServiceImpl implements PostService {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException("Post not found");
         }
+
         postRepository
                 .delete(postRepository.findById(postId)
                         .orElseThrow(() -> new PostNotFoundException("Post not found for delete operation")));

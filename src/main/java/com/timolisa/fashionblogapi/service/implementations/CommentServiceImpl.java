@@ -41,20 +41,20 @@ public class CommentServiceImpl implements CommentService {
         String token = jwtTokenProvider.getTokenFromContext();
         Long userId = jwtTokenProvider.getUserIdFromToken(token);
         User user;
+
         if (userId == null) {
             user = new User();
             user.setRole(Role.ANONYMOUS_USER);
             comment.setUser(user);
         } else {
-            user = userRepository.findById(userId)
-                    .orElseThrow(() -> {
+            user = userRepository.findById(userId).orElseThrow(() -> {
                         String message = "User not found";
                         return new UserDoesNotExistException(message);
                     });
             comment.setUser(user);
         }
-        Post foundPost = postRepository.findById(postId)
-                .orElseThrow(() -> {
+
+        Post foundPost = postRepository.findById(postId).orElseThrow(() -> {
                     String message = "Post not found";
                     return new PostNotFoundException(message);
                 });
@@ -62,6 +62,7 @@ public class CommentServiceImpl implements CommentService {
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Comments cannot be empty");
         }
+
         comment.setPost(foundPost);
         BeanUtils.copyProperties(commentDTO, comment);
         saveComment(postId, comment);
@@ -78,8 +79,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public APIResponse<Comment> findCommentById(Long id) throws PostNotFoundException {
-        Comment comment =  commentRepository.findById(id)
-                .orElseThrow(() -> {
+        Comment comment =  commentRepository.findById(id).orElseThrow(() -> {
                     String message = "Comment Not found";
                     return new PostNotFoundException(message);
                 });
@@ -101,11 +101,12 @@ public class CommentServiceImpl implements CommentService {
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Please type in a comment");
         }
-        Comment foundComment =
-                commentRepository.findById(commentId).orElseThrow(() -> {
+
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(() -> {
                             String message = "Comment not found";
                             return new PostNotFoundException(message);
                         });
+
         foundComment.setComment(commentDTO.getComment());
         commentRepository.save(foundComment);
         return responseManager.success(foundComment);
@@ -113,11 +114,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public APIResponse<String> deleteComment(Long commentId) throws PostNotFoundException {
-        Comment foundComment =
-                commentRepository.findById(commentId).orElseThrow(() -> {
+        Comment foundComment = commentRepository.findById(commentId).orElseThrow(() -> {
                     String message = "Comment not found";
                     return new PostNotFoundException(message);
                 });
+
         commentRepository.delete(foundComment);
         return responseManager.success("Comment deleted");
     }

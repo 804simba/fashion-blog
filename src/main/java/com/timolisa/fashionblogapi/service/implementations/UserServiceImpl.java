@@ -11,7 +11,7 @@ import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.UserService;
-import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.security.jwt.JwtTokenProvider;
 import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.BadCredentialsException;

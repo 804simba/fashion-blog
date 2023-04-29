@@ -10,7 +10,7 @@ import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.PostRepository;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.PostService;
-import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.security.jwt.JwtTokenProvider;
 import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

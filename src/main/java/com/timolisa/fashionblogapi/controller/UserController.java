@@ -11,7 +11,6 @@ import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.service.UserService;
 import com.timolisa.fashionblogapi.utils.ResponseManager;
-import com.timolisa.fashionblogapi.utils.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

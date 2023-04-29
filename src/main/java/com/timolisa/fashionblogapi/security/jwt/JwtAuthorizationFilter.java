@@ -1,4 +1,4 @@
-package com.timolisa.fashionblogapi.utils;
+package com.timolisa.fashionblogapi.security.jwt;
 
 import com.timolisa.fashionblogapi.service.UserService;
 import com.timolisa.fashionblogapi.service.implementations.UserServiceImpl;
@@ -20,7 +20,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Arrays;
 
-import static com.timolisa.fashionblogapi.config.SecurityConfig.WHITE_LIST_URLS;
+import static com.timolisa.fashionblogapi.security.SecurityConfig.WHITE_LIST_URLS;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 /**
@@ -34,7 +34,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Component
 @Slf4j
 @RequiredArgsConstructor
-public class JWTAuthorizationFilter extends OncePerRequestFilter {
+public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private static final String TOKEN_PREFIX = "Bearer ";
     private final JwtTokenProvider jwtTokenProvider;
     private final ApplicationContext applicationContext;

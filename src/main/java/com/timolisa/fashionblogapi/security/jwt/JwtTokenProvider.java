@@ -1,4 +1,4 @@
-package com.timolisa.fashionblogapi.utils;
+package com.timolisa.fashionblogapi.security.jwt;
 
 import com.timolisa.fashionblogapi.entity.User;
 import io.jsonwebtoken.Claims;
@@ -20,7 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.timolisa.fashionblogapi.utils.SecurityConstants.EXPIRATION_TIME;
+import static com.timolisa.fashionblogapi.security.SecurityConstants.EXPIRATION_TIME;
 
 @Component
 @Slf4j

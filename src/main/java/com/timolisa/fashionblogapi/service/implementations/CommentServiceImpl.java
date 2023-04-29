@@ -13,7 +13,7 @@ import com.timolisa.fashionblogapi.repository.CommentRepository;
 import com.timolisa.fashionblogapi.repository.PostRepository;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.CommentService;
-import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.security.jwt.JwtTokenProvider;
 import com.timolisa.fashionblogapi.utils.ResponseManager;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;

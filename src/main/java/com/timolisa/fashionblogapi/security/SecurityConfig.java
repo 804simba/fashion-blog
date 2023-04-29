@@ -1,7 +1,7 @@
-package com.timolisa.fashionblogapi.config;
+package com.timolisa.fashionblogapi.security;
 
 import com.timolisa.fashionblogapi.enums.Role;
-import com.timolisa.fashionblogapi.utils.JWTAuthorizationFilter;
+import com.timolisa.fashionblogapi.security.jwt.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +21,7 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
-    private final JWTAuthorizationFilter jwtAuthorizationFilter;
+    private final JwtAuthorizationFilter jwtAuthorizationFilter;
 
     public static final String[] WHITE_LIST_URLS = {
             "/api/fashion-blog/auth/user/login",

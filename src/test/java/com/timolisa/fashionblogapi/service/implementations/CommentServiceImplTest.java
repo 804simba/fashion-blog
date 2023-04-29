@@ -9,11 +9,10 @@ import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Role;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
-import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.CommentRepository;
 import com.timolisa.fashionblogapi.repository.PostRepository;
-import com.timolisa.fashionblogapi.util.LoggedInUser;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,13 +36,11 @@ class CommentServiceImplTest {
     private ResponseManager<Comment> responseManager;
     @Mock
     private HttpSession session;
-    @Mock
-    private LoggedInUser loggedInUser;
     @InjectMocks
     private CommentServiceImpl commentService;
 
     @Test
-    public void testCreateComment() throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
+    public void testCreateComment() throws PostNotFoundException, InvalidInputsException, UserDoesNotExistException {
         User user = UserData.buildUser();
         user.setRole(Role.USER);
         Post post = PostServiceImplTest.PostData.buildPost();
@@ -52,15 +49,13 @@ class CommentServiceImplTest {
 
         when(session.getAttribute("userId"))
                 .thenReturn(user);
-        when(loggedInUser.findLoggedInUser())
-                .thenReturn(user);
         when(postRepository.findById(1L))
                 .thenReturn(Optional.of(post));
         when(commentRepository.save(any(Comment.class)))
                 .thenReturn(comment);
         when(responseManager.success(any(Comment.class)))
                 .thenReturn(new APIResponse<>("Comment successful", true, comment));
-        Long postId = commentDTO.getPost().getId();
+        Long postId = commentDTO.getPostId();
 
         APIResponse<Comment> result = commentService
                 .createComment(commentDTO, postId);
@@ -88,8 +83,8 @@ class CommentServiceImplTest {
             user.setUserId(1L);
             return CommentDTO.builder()
                     .comment("Love it")
-                    .user(user)
-                    .post(post)
+                    .userId(user.getUserId())
+                    .postId(post.getId())
                     .build();
         }
     }

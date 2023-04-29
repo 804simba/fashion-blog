@@ -11,24 +11,32 @@ import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.UserService;
-import com.timolisa.fashionblogapi.util.ResponseManager;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserServiceImpl implements UserService {
-    private final UserRepository userRepository;
-    private final ResponseManager<UserResponseDTO> responseManager;
-    private final HttpSession session;
+import java.util.Optional;
 
-    @Autowired
-    public UserServiceImpl(final UserRepository userRepository,
-                           final ResponseManager<UserResponseDTO> responseManager,
-                           final HttpSession session) {
-        this.userRepository = userRepository;
-        this.responseManager = responseManager;
-        this.session = session;
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements UserService, UserDetailsService {
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ResponseManager<UserResponseDTO> responseManager;
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        String.format("User with username %s, not found", username)));
     }
 
     @Override
@@ -40,9 +48,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public APIResponse<UserResponseDTO> registerUser(UserSignupDTO userSignupDTO) throws UsernameExistsException {
+        String username = userSignupDTO.getUsername();
+
         APIResponse<UserResponseDTO> apiResponse;
 
-        boolean usernameExistsStatus = usernameExists(userSignupDTO.getUsername());
+        boolean usernameExistsStatus = usernameExists(username);
 
         if (usernameExistsStatus) {
             throw new UsernameExistsException("Username already exists");
@@ -51,9 +61,17 @@ public class UserServiceImpl implements UserService {
         User user = userDtoToUser(userSignupDTO);
         user.setRole(Role.USER);
         userRepository.save(user);
+        // UsernamePasswordAuthenticationToken is a simple representation of Username and password
+        String token = jwtTokenProvider
+                .generateToken(new UsernamePasswordAuthenticationToken(user, null));
 
         UserResponseDTO userResponseDTO = userToUserDTO(user);
+        userResponseDTO.setToken(token);
         apiResponse = responseManager.success(userResponseDTO);
+
+        apiResponse.setMessage("User Registered successfully");
+        apiResponse.setSuccess(true);
+        apiResponse.setPayload(userResponseDTO);
 
         return apiResponse;
     }
@@ -73,10 +91,26 @@ public class UserServiceImpl implements UserService {
         User user = adminDtoToUser(adminSignUpDTO);
         user.setRole(Role.ADMIN);
         userRepository.save(user);
+        String token = jwtTokenProvider
+                .generateToken(new UsernamePasswordAuthenticationToken(user, null));
 
         UserResponseDTO userResponseDTO = userToUserDTO(user);
+        userResponseDTO.setToken(token);
         apiResponse = responseManager.success(userResponseDTO);
+        apiResponse.setMessage("User Registered successfully");
+        apiResponse.setSuccess(true);
+        apiResponse.setPayload(userResponseDTO);
         return apiResponse;
+    }
+
+    @Override
+    public UserDetails loadByUsername(String username) {
+        return loadUserByUsername(username);
+    }
+
+    @Override
+    public Optional<User> getUserById(Long userId) {
+        return userRepository.findById(userId);
     }
 
     @Override
@@ -84,20 +118,19 @@ public class UserServiceImpl implements UserService {
         String username = userLoginDTO.getUsername();
         String password = userLoginDTO.getPassword();
 
-        boolean isUserExists = userRepository
-                .existsByUsernameAndPassword(username, password);
-
-        if (!isUserExists) {
-            throw new UserDoesNotExistException("User does not exist.");
+        UserDetails userDetails;
+        try {
+            userDetails = loadUserByUsername(username);
+        } catch (UsernameNotFoundException e) {
+            throw new UserDoesNotExistException("User does not exist");
         }
-        User user = userRepository.findByUsernameAndPassword(username, password)
-                .orElseThrow(() -> {
-                    String message = "User does not exist";
-                    return new UserDoesNotExistException(message);
-                });
-        assert user != null;
+        if (!passwordEncoder.matches(password, userDetails.getPassword())) {
+            throw new BadCredentialsException("Wrong username or password");
+        }
+        User user = (User) userDetails;
+        String token = jwtTokenProvider.generateToken(new UsernamePasswordAuthenticationToken(user, null));
         UserResponseDTO userResponseDTO = userToUserDTO(user);
-        session.setAttribute("userId", user.getUserId());
+        userResponseDTO.setToken(token);
 
         return responseManager.success(userResponseDTO);
     }
@@ -106,7 +139,7 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .username(userSignupDTO.getUsername())
                 .email(userSignupDTO.getEmail())
-                .password(userSignupDTO.getPassword())
+                .password(passwordEncoder.encode(userSignupDTO.getPassword()))
                 .build();
     }
 
@@ -121,7 +154,7 @@ public class UserServiceImpl implements UserService {
         return User.builder()
                 .username(adminSignupDTO.getUsername())
                 .email(adminSignupDTO.getEmail())
-                .password(adminSignupDTO.getPassword())
+                .password(passwordEncoder.encode(adminSignupDTO.getPassword()))
                 .build();
     }
 }

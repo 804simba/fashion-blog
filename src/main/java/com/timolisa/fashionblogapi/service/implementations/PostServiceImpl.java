@@ -3,16 +3,17 @@ package com.timolisa.fashionblogapi.service.implementations;
 import com.timolisa.fashionblogapi.dto.PostDTO;
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Post;
-import com.timolisa.fashionblogapi.enums.Role;
+import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
-import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.PostRepository;
+import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.PostService;
-import com.timolisa.fashionblogapi.util.LoggedInUser;
-import com.timolisa.fashionblogapi.util.ResponseManager;
-import jakarta.servlet.http.HttpSession;
+import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,29 +23,30 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final ResponseManager<Post> responseManager;
-    private final HttpSession session;
-    private final LoggedInUser loggedInUser;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Override
     public APIResponse<Post> createPost(PostDTO postDto)
-            throws UnauthorizedAccessException, InvalidInputsException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application.");
-        }
-        if (loggedInUser.findLoggedInUser().getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("You are not authorized to carry out this operation");
-        }
+            throws InvalidInputsException, UserDoesNotExistException {
+        String token = jwtTokenProvider.getTokenFromContext();
+        Long userId = jwtTokenProvider.getUserIdFromToken(token);
         if (postDto.getTitle().equals("") || postDto.getContent().equals("")
                 || postDto.getCategory() == null) {
             throw new InvalidInputsException("You are missing one of the required fields");
         }
         Post post = new Post();
         BeanUtils.copyProperties(postDto, post);
-        post.setUser(loggedInUser.findLoggedInUser());
+        User user = userRepository.findById(userId)
+                .orElseThrow(() ->
+                        new UserDoesNotExistException("User does not exist with id: "+userId));
+        log.info("User that made new post:: {}", user);
+        post.setUser(user);
         postRepository.save(post);
 
         return responseManager.success(post);
@@ -52,13 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public APIResponse<Post> findPostById(Long postId)
-            throws PostNotFoundException, UnauthorizedAccessException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Login to the application");
-        }
-        if (!postRepository.existsById(postId)) {
-            throw new PostNotFoundException("Post not found.");
-        }
+            throws PostNotFoundException {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> {
                     String message = "Post not found";
@@ -69,10 +65,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public APIResponse<Page<Post>> findAllPosts(Pageable pageable)
-            throws PostNotFoundException, UnauthorizedAccessException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Login to the application");
-        }
+            throws PostNotFoundException {
         Page<Post> pages = postRepository.findAll(pageable);
         if (pages.isEmpty()) {
             throw new PostNotFoundException("Posts not found");
@@ -82,18 +75,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public APIResponse<Post> updatePost(Long postId, PostDTO postDTO)
-            throws UnauthorizedAccessException, PostNotFoundException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Login to the application");
-        }
+            throws PostNotFoundException {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException("Post not found.");
         }
-        if (loggedInUser.findLoggedInUser().getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("You are not authorized to carry out this operation.");
-        }
-        Post foundPost = postRepository.findById(postId).orElse(null);
-        assert foundPost != null;
+        Post foundPost = postRepository.findById(postId)
+                .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + postId));
+
         BeanUtils.copyProperties(postDTO, foundPost);
         postRepository.save(foundPost);
         return responseManager.success(foundPost);
@@ -107,18 +95,13 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public APIResponse<String> deletePost(Long postId)
-            throws UnauthorizedAccessException, PostNotFoundException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Login to the application");
-        }
+            throws PostNotFoundException {
         if (!postRepository.existsById(postId)) {
             throw new PostNotFoundException("Post not found");
         }
-        if (loggedInUser.findLoggedInUser().getRole() != Role.ADMIN) {
-            throw new UnauthorizedAccessException("You are not authorized to carry out this operation.");
-        }
         postRepository
-                .delete(postRepository.findById(postId).get());
+                .delete(postRepository.findById(postId)
+                        .orElseThrow(() -> new PostNotFoundException("Post not found for delete operation")));
         return responseManager.success("Post deleted");
     }
 }

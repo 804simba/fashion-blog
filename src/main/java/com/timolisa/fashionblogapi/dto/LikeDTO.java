@@ -1,8 +1,5 @@
 package com.timolisa.fashionblogapi.dto;
 
-import com.timolisa.fashionblogapi.entity.Comment;
-import com.timolisa.fashionblogapi.entity.Post;
-import com.timolisa.fashionblogapi.entity.User;
 import lombok.Data;
 
 @Data

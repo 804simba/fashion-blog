@@ -6,11 +6,12 @@ import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
 import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 
 import java.util.List;
 
 public interface CommentService {
-    APIResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException;
+    APIResponse<Comment> createComment(CommentDTO commentDTO, Long postId) throws UnauthorizedAccessException, InvalidInputsException, PostNotFoundException, UserDoesNotExistException;
     void saveComment(Long postId, Comment comment);
     APIResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException;
     APIResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException;

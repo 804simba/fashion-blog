@@ -9,22 +9,19 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-//    @Value("${application.name}")
-//    private String version;
     @Bean
     public OpenAPI api() {
         return new OpenAPI()
                 .info(new Info()
                         .title("Fashion Blog API")
                         .description("A RestFUL web-service that provides crud operations for a fashion blog"));
-//                        .version(version));
     }
 
     @Bean
     public GroupedOpenApi usersEndPoints() {
         return GroupedOpenApi.builder()
                 .group("Users")
-                .pathsToMatch("/api/fashion-blog/users/**")
+                .pathsToMatch("/api/fashion-blog/auth/**")
                 .build();
     }
 

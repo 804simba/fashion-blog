@@ -12,6 +12,7 @@ import com.timolisa.fashionblogapi.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,7 +23,7 @@ public class LikeController {
     private final CommentService commentService;
     private final PostService postService;
 
-    @PostMapping("/{post-id}")
+    @PostMapping("/like-post/{post-id}")
     public ResponseEntity<APIResponse<Like>> createLikeForPost(@PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {
         Post post = postService
@@ -32,14 +33,14 @@ public class LikeController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{post-id}")
+    @DeleteMapping("/unlike-post/{post-id}")
     public ResponseEntity<APIResponse<String>> unlikeAPost(@PathVariable("post-id") Long postId) {
         APIResponse<String> response =
                 likeService.deleteLikeForPost(postId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/{comment-id}")
+    @PostMapping("/like-comment/{comment-id}")
     public ResponseEntity<APIResponse<Like>> createLikeForComment(@PathVariable("comment-id") Long commentId)
             throws PostNotFoundException, UnauthorizedAccessException {
         Comment comment = commentService
@@ -49,7 +50,7 @@ public class LikeController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @DeleteMapping("/{comment-id}")
+    @DeleteMapping("/unlike-comment/{comment-id}")
     public ResponseEntity<APIResponse<String>> unlikeAComment(@PathVariable("comment-id") Long commentId) {
         APIResponse<String> response =
                 likeService.deleteLikeForComment(commentId);

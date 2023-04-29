@@ -17,7 +17,7 @@ public class UserResponseDTO {
     private String username;
     private String email;
     private Role role;
-
+    private String token;
     @CreationTimestamp
     private Timestamp createdAt;
 }

@@ -6,9 +6,10 @@ import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
 import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.PostSpecification;
 import com.timolisa.fashionblogapi.service.PostService;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ public class PostController {
 
     @PostMapping("/new")
     public ResponseEntity<APIResponse<Post>> createPost(@RequestBody PostDTO postDTO)
-            throws UnauthorizedAccessException, InvalidInputsException {
+            throws UnauthorizedAccessException, InvalidInputsException, UserDoesNotExistException {
         APIResponse<Post> post = postService.createPost(postDTO);
         return new ResponseEntity<>(post, HttpStatus.CREATED);
     }
@@ -64,7 +65,7 @@ public class PostController {
         }
     }
 
-    @GetMapping("/{post-id}")
+    @GetMapping("/post/{post-id}")
     public ResponseEntity<APIResponse<Post>> viewPost(@PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {
         APIResponse<Post> foundPost = postService.findPostById(postId);

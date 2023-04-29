@@ -7,7 +7,7 @@ import com.timolisa.fashionblogapi.dto.UserResponseDTO;
 import com.timolisa.fashionblogapi.dto.UserSignupDTO;
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.service.UserService;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;

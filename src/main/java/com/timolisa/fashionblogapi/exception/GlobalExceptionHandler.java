@@ -1,6 +1,7 @@
 package com.timolisa.fashionblogapi.exception;
 
 import com.timolisa.fashionblogapi.dto.ErrorMessageDTO;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -43,5 +44,23 @@ public class GlobalExceptionHandler {
         ErrorMessageDTO errorMessage =
                 new ErrorMessageDTO(HttpStatus.ALREADY_REPORTED, exception.getMessage());
         return ResponseEntity.status(HttpStatus.ALREADY_REPORTED).body(errorMessage);
+    }
+    @ExceptionHandler(InvalidTokenRequestException.class)
+    public ResponseEntity<ErrorMessageDTO> invalidTokenRequestException(InvalidTokenRequestException exception) {
+        ErrorMessageDTO errorMessageDTO =
+                new ErrorMessageDTO(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorMessageDTO);
+    }
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorMessageDTO> constraintViolationException(ConstraintViolationException exception) {
+        ErrorMessageDTO errorMessageDTO =
+                new ErrorMessageDTO(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorMessageDTO);
+    }
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ErrorMessageDTO> nullPointerException(NullPointerException exception) {
+        ErrorMessageDTO errorMessageDTO =
+                new ErrorMessageDTO(HttpStatus.NOT_ACCEPTABLE, exception.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(errorMessageDTO);
     }
 }

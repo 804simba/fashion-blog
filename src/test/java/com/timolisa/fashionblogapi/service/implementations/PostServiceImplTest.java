@@ -9,10 +9,9 @@ import com.timolisa.fashionblogapi.enums.Category;
 import com.timolisa.fashionblogapi.enums.Role;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
-import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.PostRepository;
-import com.timolisa.fashionblogapi.util.LoggedInUser;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,13 +38,11 @@ class PostServiceImplTest {
     private ResponseManager<Post> responseManager;
     @Mock
     private HttpSession session;
-    @Mock
-    private LoggedInUser loggedInUser;
     @InjectMocks
     private PostServiceImpl postService;
 
     @Test
-    public void testCreatePost() throws UnauthorizedAccessException, InvalidInputsException {
+    public void testCreatePost() throws InvalidInputsException, UserDoesNotExistException {
         User user = UserData.buildUser();
         user.setUserId(1L);
         user.setRole(Role.ADMIN);
@@ -54,8 +51,6 @@ class PostServiceImplTest {
 
         when(session.getAttribute("userId"))
                 .thenReturn(1L);
-        when(loggedInUser.findLoggedInUser())
-                .thenReturn(user);
         when(postRepository.save(any(Post.class)))
                 .thenReturn(post);
         when(responseManager.success(any(Post.class)))
@@ -66,7 +61,7 @@ class PostServiceImplTest {
     }
 
     @Test
-    public void testFindPostById() throws PostNotFoundException, UnauthorizedAccessException {
+    public void testFindPostById() throws PostNotFoundException {
         Post post = PostData.buildPost();
         post.setId(1L);
         when(session.getAttribute("userId"))

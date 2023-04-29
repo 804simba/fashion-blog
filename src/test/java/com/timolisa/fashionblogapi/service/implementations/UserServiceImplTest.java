@@ -6,7 +6,7 @@ import com.timolisa.fashionblogapi.dto.UserSignupDTO;
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.repository.UserRepository;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

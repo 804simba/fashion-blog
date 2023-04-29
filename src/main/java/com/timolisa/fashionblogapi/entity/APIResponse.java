@@ -15,7 +15,6 @@ public class APIResponse<T> {
         this.message = usernameAlreadyExists;
         this.success = status;
     }
-
     public APIResponse(String message) {
         this.message = message;
     }

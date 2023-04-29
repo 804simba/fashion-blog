@@ -8,14 +8,14 @@ import com.timolisa.fashionblogapi.entity.User;
 import com.timolisa.fashionblogapi.enums.Role;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
-import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.repository.CommentRepository;
 import com.timolisa.fashionblogapi.repository.PostRepository;
+import com.timolisa.fashionblogapi.repository.UserRepository;
 import com.timolisa.fashionblogapi.service.CommentService;
-import com.timolisa.fashionblogapi.util.LoggedInUser;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.JwtTokenProvider;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import jakarta.persistence.EntityManager;
-import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,21 +29,29 @@ import java.util.List;
 @Slf4j
 public class CommentServiceImpl implements CommentService {
     private final PostRepository postRepository;
+    private final UserRepository userRepository;
     private final CommentRepository commentRepository;
     private final ResponseManager<Comment> responseManager;
-    private final HttpSession session;
-    private final LoggedInUser loggedInUser;
     private final EntityManager entityManager;
+    private final JwtTokenProvider jwtTokenProvider;
     @Override
     public APIResponse<Comment> createComment(CommentDTO commentDTO, Long postId)
-            throws InvalidInputsException, PostNotFoundException {
+            throws InvalidInputsException, PostNotFoundException, UserDoesNotExistException {
         Comment comment = new Comment();
-        if (session.getAttribute("userId") == null) {
-            User user = new User();
+        String token = jwtTokenProvider.getTokenFromContext();
+        Long userId = jwtTokenProvider.getUserIdFromToken(token);
+        User user;
+        if (userId == null) {
+            user = new User();
             user.setRole(Role.ANONYMOUS_USER);
             comment.setUser(user);
         } else {
-            comment.setUser(loggedInUser.findLoggedInUser());
+            user = userRepository.findById(userId)
+                    .orElseThrow(() -> {
+                        String message = "User not found";
+                        return new UserDoesNotExistException(message);
+                    });
+            comment.setUser(user);
         }
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> {
@@ -69,10 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public APIResponse<Comment> findCommentById(Long id) throws PostNotFoundException, UnauthorizedAccessException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application");
-        }
+    public APIResponse<Comment> findCommentById(Long id) throws PostNotFoundException {
         Comment comment =  commentRepository.findById(id)
                 .orElseThrow(() -> {
                     String message = "Comment Not found";
@@ -82,10 +87,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public APIResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws UnauthorizedAccessException, PostNotFoundException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application");
-        }
+    public APIResponse<List<Comment>> findAllCommentsForAPost(Long postId) throws PostNotFoundException {
         List<Comment> comments =
                 commentRepository.findByPost_IdOrderByCreatedAt(postId);
         if (comments.size() == 0) {
@@ -95,10 +97,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public APIResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws UnauthorizedAccessException, PostNotFoundException, InvalidInputsException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application");
-        }
+    public APIResponse<Comment> updateComment(CommentDTO commentDTO, Long commentId) throws PostNotFoundException, InvalidInputsException {
         if (commentDTO.getComment().equals("")) {
             throw new InvalidInputsException("Please type in a comment");
         }
@@ -113,10 +112,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public APIResponse<String> deleteComment(Long commentId) throws UnauthorizedAccessException, PostNotFoundException {
-        if (session.getAttribute("userId") == null) {
-            throw new UnauthorizedAccessException("Please login to the application");
-        }
+    public APIResponse<String> deleteComment(Long commentId) throws PostNotFoundException {
         Comment foundComment =
                 commentRepository.findById(commentId).orElseThrow(() -> {
                     String message = "Comment not found";

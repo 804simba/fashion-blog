@@ -10,7 +10,8 @@ import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
 import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.exception.UsernameExistsException;
 import com.timolisa.fashionblogapi.service.UserService;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
+import com.timolisa.fashionblogapi.utils.SecurityConstants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/fashion-blog/users")
+@RequestMapping("/api/fashion-blog/auth")
 public class UserController {
     private final UserService userService;
     private final ResponseManager<UserResponseDTO> responseManager;
@@ -31,7 +32,7 @@ public class UserController {
         this.responseManager = responseManager;
     }
 
-    @PostMapping("/admin/register")
+    @PostMapping("/admin/sign-up")
     public ResponseEntity<APIResponse<UserResponseDTO>> adminRegistration(@RequestBody AdminSignupDTO signupDTO) {
         APIResponse<UserResponseDTO> apiResponse;
         try {
@@ -43,7 +44,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/sign-up")
+    @PostMapping("/user/sign-up")
     public ResponseEntity<APIResponse<UserResponseDTO>> register(@RequestBody UserSignupDTO userSignupDTO) {
         APIResponse<UserResponseDTO> apiResponse;
         try {
@@ -55,7 +56,7 @@ public class UserController {
         return ResponseEntity.ok(apiResponse);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/user/login")
     public ResponseEntity<APIResponse<UserResponseDTO>> login(@RequestBody UserLoginDTO userLoginDTO) {
         APIResponse<UserResponseDTO> apiResponse;
         try {

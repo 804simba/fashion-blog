@@ -6,6 +6,7 @@ import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;
 import com.timolisa.fashionblogapi.exception.PostNotFoundException;
 import com.timolisa.fashionblogapi.exception.UnauthorizedAccessException;
+import com.timolisa.fashionblogapi.exception.UserDoesNotExistException;
 import com.timolisa.fashionblogapi.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,14 +17,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/fashion-blog/post/comments")
+@RequestMapping("/api/fashion-blog/post/comment")
 public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/new/{post-id}")
     public ResponseEntity<APIResponse<Comment>> createComment(@PathVariable("post-id") Long postId,
                                                               @RequestBody CommentDTO commentDTO)
-            throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException {
+            throws PostNotFoundException, UnauthorizedAccessException, InvalidInputsException, UserDoesNotExistException {
         APIResponse<Comment> response =
                 commentService.createComment(commentDTO, postId);
         return new ResponseEntity<>(response, HttpStatus.CREATED);

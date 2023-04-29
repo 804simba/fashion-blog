@@ -1,4 +1,4 @@
-package com.timolisa.fashionblogapi.util;
+package com.timolisa.fashionblogapi.utils;
 
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Post;
@@ -9,6 +9,9 @@ import java.util.List;
 
 @Service
 public class ResponseManager<T> {
+    public APIResponse<?> registrationSuccess(T data) {
+        return new APIResponse<>("Registration successful", true, data);
+    }
     public APIResponse<T> success(T data) {
         return new APIResponse<>("Request successful", true, data);
     }
@@ -27,8 +30,8 @@ public class ResponseManager<T> {
         return new APIResponse<>(usernameAlreadyExists, status);
     }
 
-    public APIResponse<String> error(String message) {
-        return new APIResponse<>(message);
+    public APIResponse<T> error(String message) {
+        return new APIResponse<>("Registration unsuccessful due to Bad credentials");
     }
 
     public APIResponse<Page<T>> notFound(String message) {

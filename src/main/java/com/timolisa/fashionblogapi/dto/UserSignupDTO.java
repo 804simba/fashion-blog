@@ -16,10 +16,5 @@ import java.sql.Timestamp;
 public class UserSignupDTO {
     private String username;
     private String email;
-    private Role role;
     private String password;
-    private String repeatPassword;
-
-    @CreationTimestamp
-    private Timestamp createdAt;
 }

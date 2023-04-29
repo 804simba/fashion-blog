@@ -6,7 +6,7 @@ import com.timolisa.fashionblogapi.entity.Like;
 import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.repository.LikeRepository;
 import com.timolisa.fashionblogapi.service.LikeService;
-import com.timolisa.fashionblogapi.util.ResponseManager;
+import com.timolisa.fashionblogapi.utils.ResponseManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -72,7 +72,7 @@ public class PostController {
         return new ResponseEntity<>(foundPost, HttpStatus.FOUND);
     }
 
-    @PutMapping("/update/{post-id}")
+    @PostMapping("/update/{post-id}")
     public ResponseEntity<APIResponse<Post>> editPost(@RequestBody PostDTO postDTO,
                                                       @PathVariable("post-id") Long postId)
             throws PostNotFoundException, UnauthorizedAccessException {

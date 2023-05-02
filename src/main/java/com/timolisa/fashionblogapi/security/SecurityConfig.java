@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .sessionManagement().sessionCreationPolicy(STATELESS)
                 .and().authorizeHttpRequests().requestMatchers(WHITE_LIST_URLS).permitAll()
                 .and().authorizeHttpRequests().requestMatchers(POST, "/api/fashion-blog/posts/**").hasAuthority("ADMIN")
-                .and().authorizeHttpRequests().requestMatchers(PUT, "/api/fashion-blog/posts/**").hasAuthority(String.valueOf(Role.ADMIN))
+                .and().authorizeHttpRequests().requestMatchers(PUT, "/api/fashion-blog/posts/update/**").hasAuthority(String.valueOf(Role.ADMIN))
                 .and().authorizeHttpRequests().requestMatchers(DELETE, "/api/fashion-blog/posts/**").hasAuthority(String.valueOf(Role.ADMIN))
                 .and().authorizeHttpRequests().requestMatchers(POST, "/api/fashion-blog/post/comment/**").hasAnyAuthority(String.valueOf(Role.ADMIN), String.valueOf(Role.USER))
                 .and().authorizeHttpRequests().requestMatchers(PUT, "/api/fashion-blog/post/comment/**").hasAnyAuthority(String.valueOf(Role.ADMIN), String.valueOf(Role.USER))
@@ -51,7 +51,7 @@ public class SecurityConfig {
                 .and().authorizeHttpRequests().anyRequest().authenticated()
                 .and()
                 .authenticationProvider(authenticationProvider) // injects the authProvider
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class); // adds the filter before each request
+                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class); // adds the jwtAuthorizationFilter before the usernamePasswordAuthentication filter for each request
 
         return http.build();
     }

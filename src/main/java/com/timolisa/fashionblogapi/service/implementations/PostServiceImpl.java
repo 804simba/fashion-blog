@@ -85,7 +85,10 @@ public class PostServiceImpl implements PostService {
         Post foundPost = postRepository.findById(postId)
                 .orElseThrow(() -> new PostNotFoundException("Post not found with id: " + postId));
 
-        BeanUtils.copyProperties(postDTO, foundPost);
+//        BeanUtils.copyProperties(postDTO, foundPost);
+        foundPost.setTitle(postDTO.getTitle());
+        foundPost.setContent(postDTO.getContent());
+        foundPost.setCategory(postDTO.getCategory());
         postRepository.save(foundPost);
         return responseManager.success(foundPost);
     }

@@ -20,6 +20,5 @@ public class PostDTO {
     private Category category;
     private List<CommentDTO> comments;
     private List<LikeDTO> likes;
-    private Long userId;
-    private LocalDateTime updatedAt;
+//    private Long userId;
 }

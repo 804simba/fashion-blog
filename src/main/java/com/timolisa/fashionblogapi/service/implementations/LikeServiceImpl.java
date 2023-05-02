@@ -7,6 +7,7 @@ import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.repository.LikeRepository;
 import com.timolisa.fashionblogapi.service.LikeService;
 import com.timolisa.fashionblogapi.utils.ResponseManager;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public APIResponse<String> deleteLikeForComment(Long commentId) {
         likeRepository.deleteByComment_Id(commentId);
         String message = String.format("like for post with id: %d has been unliked", commentId);
@@ -39,6 +41,7 @@ public class LikeServiceImpl implements LikeService {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public APIResponse<String> deleteLikeForPost(Long postId) {
         likeRepository.deleteByPost_Id(postId);
         String message = String.format("like for post with id: %d has been unliked", postId);

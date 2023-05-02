@@ -13,7 +13,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 public class CommentDTO {
     private String comment;
-    private Long userId;
-    private Long postId;
-    private Timestamp createdAt;
+//    private Long userId;
+//    private Long postId;
+//    private Timestamp createdAt;
 }

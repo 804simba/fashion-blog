@@ -1,4 +1,4 @@
-package com.timolisa.fashionblogapi.dto;
+package com.timolisa.fashionblogapi.dto.request;
 
 import com.timolisa.fashionblogapi.enums.Role;
 import lombok.AllArgsConstructor;

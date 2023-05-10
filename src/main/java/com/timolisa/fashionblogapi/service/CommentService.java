@@ -1,6 +1,6 @@
 package com.timolisa.fashionblogapi.service;
 
-import com.timolisa.fashionblogapi.dto.CommentDTO;
+import com.timolisa.fashionblogapi.dto.request.CommentDTO;
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Comment;
 import com.timolisa.fashionblogapi.exception.InvalidInputsException;

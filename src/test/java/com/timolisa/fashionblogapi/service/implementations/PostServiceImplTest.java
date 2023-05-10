@@ -1,7 +1,7 @@
 package com.timolisa.fashionblogapi.service.implementations;
 
 import com.timolisa.fashionblogapi.UserData;
-import com.timolisa.fashionblogapi.dto.PostDTO;
+import com.timolisa.fashionblogapi.dto.request.PostDTO;
 import com.timolisa.fashionblogapi.entity.APIResponse;
 import com.timolisa.fashionblogapi.entity.Post;
 import com.timolisa.fashionblogapi.entity.User;

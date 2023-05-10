@@ -1,4 +1,4 @@
-package com.timolisa.fashionblogapi.dto;
+package com.timolisa.fashionblogapi.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
